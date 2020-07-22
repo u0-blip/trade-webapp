@@ -12,11 +12,15 @@ from flask_admin import BaseView, expose
 
 from pandas_datareader import data
 import datetime
+from bokeh.layouts  import column
 from bokeh.plotting import figure, show, output_file
 from bokeh.embed import components
 from bokeh.resources import CDN
 from flask import Blueprint
 import numpy as np
+import pandas_datareader as pdr
+import json
+import pickle
 
 # Create Flask application
 app = Flask(__name__)
@@ -112,15 +116,73 @@ class CustomView(BaseView):
 def index():
     return render_template('index.html')
 
-@app.route('/plot',methods =['GET','POST'])
-def plot():
+@app.route('/plot/<stonks>',methods =['GET','POST'])
+def plot(stonks):
+    stonk_list = stonks.split(' ')
+
+    if len(stonk_list) == 1:
+        return plot_candle(stonk_list[0])
+    else:
+        lines = []
+        for s in stonk_list:
+            lines.append(plot_trend(s))
+        return json.dumps(lines)
+
+stonk_lookup = {
+    '^GSPC':'S&P 500',
+    'VAS.AX':'VAS',
+    '^HSI': 'HSI'
+}
+
+def plot_trend(stonk):
     start = datetime.datetime(2020,5,1)
     end = datetime.datetime.today().strftime("%Y/%m/%d")
     # word = request.form['company_ip']
 
     # df=data.DataReader(name=word,data_source="iex",start=start,end=end, api_key='pk_c88b455c96e54a6b965aa23c1797f5ad')
-    import pandas_datareader as pdr
-    df=pdr.get_data_yahoo('AAPL', start=start, end=end, interval='d')
+    df=get_cache_data(stonk, start=start, end=end, interval='d')
+
+    p=figure(x_axis_type='datetime' , sizing_mode='scale_both')
+    p.title.text=stonk_lookup[stonk]
+    p.grid.grid_line_alpha=0.3
+
+    df["Middle"]=(df.Open+df.Close)/2
+    p.line(df.index, df.Middle)
+    script1, div1 = components(p)
+
+    return script1 + div1
+
+def get_cache_data(stonk, start, end, interval):
+    key = str(stonk) + str(start) + str(end) + str(interval)
+    fname = 'stonk_cache.pickle'
+    if os.path.exists(fname):
+        with open(fname, 'rb') as cache:
+            db = pickle.load(cache)
+        if key in db:
+            return db[key]
+        else:
+            df=pdr.get_data_yahoo(stonk, start=start, end=end, interval=interval)
+            db[key] = df
+            with open(fname, 'wb') as cache:
+                pickle.dump(db, cache)
+            return df
+    else:
+        db = {}
+        df=pdr.get_data_yahoo(stonk, start=start, end=end, interval=interval)
+        db[key] = df
+        with open(fname, 'wb') as cache:
+            pickle.dump(db, cache)
+        return df
+
+
+def plot_candle(stonk):
+    start = datetime.datetime(2020,5,1)
+    end = datetime.datetime.today().strftime("%Y/%m/%d")
+    # word = request.form['company_ip']
+
+    # df=data.DataReader(name=word,data_source="iex",start=start,end=end, api_key='pk_c88b455c96e54a6b965aa23c1797f5ad')
+
+    df=get_cache_data(stonk, start=start, end=end, interval='d')
 
     def inc_dec(c, o):
         if c > o:
@@ -138,8 +200,8 @@ def plot():
     df["Middle"]=(df.Open+df.Close)/2
     df["Height"]=abs(df.Close-df.Open)
 
-    p=figure(x_axis_type='datetime', width=1000, height=300)
-    p.title.text="Candlestick Chart"
+    p=figure(x_axis_type='datetime' , sizing_mode='stretch_both')
+    p.title.text=stonk
     p.grid.grid_line_alpha=0.3
 
     hours_12=12*60*60*1000
@@ -152,14 +214,27 @@ def plot():
     p.rect(df.index[df.Status=="Decrease"],df.Middle[df.Status=="Decrease"],
            hours_12, df.Height[df.Status=="Decrease"],fill_color="#FF3333",line_color="black")
 
+    mv_avg = df.Middle.rolling(5).sum()/5
+
+    p.line(df.index, mv_avg)
+
+    p1=figure(x_axis_type='datetime' , sizing_mode='stretch_both')
+    p1.title.text='volume (x10^4)'
+    
+    p1.vbar(x=df.index, top=df.Volume/1e5, width=0.9)
 
     script1, div1 = components(p)
-    cdn_js=CDN.js_files[0]
+    
+    script2, div2 = components(p1)
+
+    all_plot = json.dumps([script1 + div1, script2 + div2])
+
+    # cdn_js=CDN.js_files[0]
     # cdn_css=CDN.css_files[0]
-    predicted = predict_prices(df.Middle[-10:].values.reshape(-1, 1), np.expand_dims(np.arange(29), 1))
+    # predicted = predict_prices(df.Middle[-10:].values.reshape(-1, 1), np.expand_dims(np.arange(29), 1))
     # print(predicted)
     # print(predicted, script1, div1, cdn_js)
-    return script1 + div1
+    return all_plot
 
 
 def predict_prices(prices,x):
@@ -256,4 +331,4 @@ if __name__ == '__main__':
         build_sample_db()
 
     # Start app
-    app.run(debug=True)
+    app.run(host='192.168.20.3', debug=False, port=25531)

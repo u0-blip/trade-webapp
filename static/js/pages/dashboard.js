@@ -8,15 +8,34 @@
 $(function () {
       $.ajax({
           type: 'POST',
-          url: '/plot',
-          success: function (script) {
-              $('#revenue-chart').html(script)
+          url: '/plot/AAPL',
+          success: function (scripts) {
+              var scripts_list = JSON.parse(scripts)
+              $('#price').html(scripts_list[0])
+              $('#volume').html(scripts_list[1])
           },
           error: function () {
               alert('Unexpected error');
           }
       });
   });
+
+$(function () {
+    $.ajax({
+        type: 'POST',
+        url: '/plot/^GSPC VAS.AX ^HSI',
+        success: function (scripts) {
+          var scripts_list = JSON.parse(scripts)
+          $('#sparkline-1').html(scripts_list[0])
+          $('#sparkline-2').html(scripts_list[1])
+          $('#sparkline-3').html(scripts_list[2])
+        },
+        error: function () {
+            alert('Unexpected error');
+        }
+    });
+});
+
 
 $(function () {
 
@@ -90,42 +109,51 @@ $(function () {
     },
     series: {
       regions: [{
-        values: visitorsData,
+        // values: visitorsData,
         scale: ["#92c1dc", "#ebf4f9"],
         normalizeFunction: 'polynomial'
       }]
     },
+    markers: [
+      {latLng: [40.713, -74.01], name: 'New York'},
+      {latLng: [51.5074, 0.1278], name: 'London'},
+      {latLng: [31.2304, 121.4737], name: 'Shanghai'},
+      {latLng: [22.3193, 114.1694], name: 'HK'},
+      {latLng: [-33.8688, 151.2093], name: 'Sydney'},
+      {latLng: [35.6762, 139.6503], name: 'Tokyo'},
+    ],
     onRegionLabelShow: function (e, el, code) {
       if (typeof visitorsData[code] != "undefined")
         el.html(el.html() + ': ' + visitorsData[code] + ' new visitors');
     }
   });
 
-  //Sparkline charts
-  var myvalues = [1000, 1200, 920, 927, 931, 1027, 819, 930, 1021];
-  $('#sparkline-1').sparkline(myvalues, {
-    type: 'line',
-    lineColor: '#92c1dc',
-    fillColor: "#ebf4f9",
-    height: '50',
-    width: '80'
-  });
-  myvalues = [515, 519, 520, 522, 652, 810, 370, 627, 319, 630, 921];
-  $('#sparkline-2').sparkline(myvalues, {
-    type: 'line',
-    lineColor: '#92c1dc',
-    fillColor: "#ebf4f9",
-    height: '50',
-    width: '80'
-  });
-  myvalues = [15, 19, 20, 22, 33, 27, 31, 27, 19, 30, 21];
-  $('#sparkline-3').sparkline(myvalues, {
-    type: 'line',
-    lineColor: '#92c1dc',
-    fillColor: "#ebf4f9",
-    height: '50',
-    width: '80'
-  });
+
+  // // Sparkline charts
+  // var myvalues = [1000, 1200, 920, 927, 931, 1027, 819, 930, 1021];
+  // $('#sparkline-1').sparkline(myvalues, {
+  //   type: 'line',
+  //   lineColor: '#92c1dc',
+  //   fillColor: "#ebf4f9",
+  //   height: '50',
+  //   width: '80'
+  // });
+  // myvalues = [515, 519, 520, 522, 652, 810, 370, 627, 319, 630, 921];
+  // $('#sparkline-2').sparkline(myvalues, {
+  //   type: 'line',
+  //   lineColor: '#92c1dc',
+  //   fillColor: "#ebf4f9",
+  //   height: '50',
+  //   width: '80'
+  // });
+  // myvalues = [15, 19, 20, 22, 33, 27, 31, 27, 19, 30, 21];
+  // $('#sparkline-3').sparkline(myvalues, {
+  //   type: 'line',
+  //   lineColor: '#92c1dc',
+  //   fillColor: "#ebf4f9",
+  //   height: '50',
+  //   width: '80'
+  // });
 
   //The Calender
   $("#calendar").datepicker();
