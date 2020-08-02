@@ -331,4 +331,4 @@ if __name__ == '__main__':
         build_sample_db()
 
     # Start app
-    app.run(host='192.168.20.3', debug=False, port=25531)
+    app.run(host='localhost', debug=False, port=25531)
