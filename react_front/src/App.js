@@ -16,6 +16,7 @@ import Signup from './util/auth/Signup';
 import { ApolloProvider } from 'react-apollo';
 import ApolloClient, { gql } from 'apollo-boost';
 import Axios from 'axios';
+import Profile from './pages/profile';
 
 Axios.defaults.baseURL = 'http://127.0.0.1:8000';
 
@@ -86,6 +87,8 @@ function App() {
                 <Route exact path='/' component={Home} />
                 <Route exact path='/login' component={Login} />
                 <Route exact path='/signup' component={Signup} />
+                <Route path='/profile/:id' component={Profile} />
+
               </Switch>
             </div>
           </Router>
@@ -94,23 +97,6 @@ function App() {
     </MuiThemeProvider>
   );
 }
-
-export const GET_TRACKS_QUERY = gql`
-  query getTracksQuery {
-    music {
-      id
-      title
-      description
-      hashtag
-      url
-      owner {
-        id
-        username
-      }
-    }
-  }
-
-`;
 
 
 const IS_LOGGED_IN_QUERY = gql`
@@ -137,11 +123,6 @@ export const GET_USER_QUERY = gql`
       username
       email
       dateJoined
-      musicSet{
-        id
-        title
-        url
-      }
     }
   }
 `;
