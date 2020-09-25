@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 import '../../node_modules/react-vis/dist/style.css';
-import { XYPlot, XAxis, YAxis, HorizontalGridLines, LineSeries, RadialChart } from 'react-vis';
+import { RadialChart } from 'react-vis';
 import clsx from 'clsx';
 import Movement from '../util/plot/movement';
 

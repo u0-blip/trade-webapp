@@ -4,6 +4,7 @@ import { faArrowAltCircleRight } from '@fortawesome/free-solid-svg-icons';
 import IonPie from 'react-ionicons/lib/MdPie';
 import IonStat from 'react-ionicons/lib/MdStats';
 import IonFlame from 'react-ionicons/lib/MdFlame';
+import { Link } from 'react-router-dom';
 export class StatsBar extends Component {
     render() {
         let stats = this.props.stats;
@@ -22,6 +23,7 @@ export class StatsBar extends Component {
             case 'Alpha':
             case 'Beta':
             case 'Sharpe':
+            default:
                 statsIcon = <div class="icon">
                     <IonStat />
                 </div>
@@ -36,8 +38,8 @@ export class StatsBar extends Component {
                         {stats}
                     </div>
                     {statsIcon}
-                    <a href="#" class="small-box-footer">More info
-                    <FontAwesomeIcon icon={faArrowAltCircleRight} /></a>
+                    <Link to='/' class="small-box-footer">More info
+                    <FontAwesomeIcon icon={faArrowAltCircleRight} /></Link>
                 </div>
             </div>
         )
@@ -47,7 +49,7 @@ export class StatsBar extends Component {
 export class StatsBars extends Component {
     render() {
         let statsArr = ['Sharpe', 'Return (day)', 'Alpha', 'Beta', 'Sharpe', 'Fund utility'];
-        return <div className='container'>
+        return <div className='container' style={{ marginTop: '1rem' }}>
             <div className='row'>
                 {statsArr.map(stats => {
                     return <StatsBar stats={stats} />

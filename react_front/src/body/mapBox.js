@@ -1,21 +1,6 @@
 import React, { Component } from 'react'
-import $, { extend } from 'jquery';
 import { VectorMap } from 'react-jvectormap';
 import Movement from '../util/plot/movement';
-
-var visitorsData = {
-    "US": 398, //USA
-    "SA": 400, //Saudi Arabia
-    "CA": 1000, //Canada
-    "DE": 500, //Germany
-    "FR": 760, //France
-    "CN": 300, //China
-    "AU": 700, //Australia
-    "BR": 600, //Brazil
-    "IN": 800, //India
-    "GB": 320, //Great Britain
-    "RU": 3000 //Russia
-};
 
 
 export default class MapBox extends Component {
@@ -51,10 +36,7 @@ export default class MapBox extends Component {
                 { latLng: [-33.8688, 151.2093], name: 'Sydney' },
                 { latLng: [35.6762, 139.6503], name: 'Tokyo' },
             ],
-            // onRegionLabelShow: function (e, el, code) {
-            //     if (typeof visitorsData[code] != "undefined")
-            //         el.html(el.html() + ': ' + visitorsData[code] + ' new visitors');
-            // }
+
         }
         return (
             <div class="box box-solid bg-light-blue-gradient">

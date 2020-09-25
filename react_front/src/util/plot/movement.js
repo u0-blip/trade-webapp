@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { makeWidthFlexible, XYPlot, XAxis, YAxis, HorizontalGridLines, LineSeries, RadialChart } from 'react-vis';
+import React from 'react'
+import { XYPlot, XAxis, YAxis, HorizontalGridLines, LineSeries } from 'react-vis';
 
 export default function Movement(props) {
     const data = [

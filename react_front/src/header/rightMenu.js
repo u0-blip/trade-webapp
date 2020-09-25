@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import $ from 'jquery';
-import { withStyles } from '@material-ui/core';
+import { Button, withStyles } from '@material-ui/core';
 import TocIcon from '@material-ui/icons/Toc';
+import { Link } from 'react-router-dom';
 
 const style = (theme) => {
   return {
@@ -67,16 +68,14 @@ export class RightMenu extends Component {
   }
 
   render() {
-    const classes = this.props.classes;
 
-    let expandButton = <a
+    let expandButton = <Button
       style={{}}
       onClick={(e) => {
         this.offcanvas(e)
-      }}
-      role="button">
+      }}>
       <TocIcon />
-    </a>
+    </Button>
 
     let placeHolder = <div style={{ width: '24px' }} />
     return (
@@ -100,7 +99,7 @@ export class RightMenu extends Component {
              {{ current_user.email }}
              {%- endif %} */}
                 </p>
-                <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+                <Link to='/'><i class="fa fa-circle text-success"></i> Online</Link>
               </div>
             </div>
 
@@ -110,46 +109,46 @@ export class RightMenu extends Component {
         {{ layout.menu() }}
         {% endblock %} */}
               <li>
-                <a href="#">
+                <Link to='/'>
                   <i class="fa fa-envelope"></i> <span>Mailbox</span>
                   <span class="pull-right-container">
                     <small class="label pull-right bg-yellow">12</small>
                     <small class="label pull-right bg-green">16</small>
                     <small class="label pull-right bg-red">5</small>
                   </span>
-                </a>
+                </Link>
               </li>
               <li class="treeview">
-                <a href="#">
+                <Link to='/'>
                   <i class="fa fa-share"></i> <span>Multilevel</span>
                   <span class="pull-right-container">
                     <i class="fa fa-angle-left pull-right"></i>
                   </span>
-                </a>
+                </Link>
                 <ul class="treeview-menu">
-                  <li><a href="#"><i class="fa fa-circle-o"></i> Level One</a></li>
+                  <li><Link to='/'><i class="fa fa-circle-o"></i> Level One</Link></li>
                   <li>
-                    <a href="#"><i class="fa fa-circle-o"></i> Level One
+                    <Link to='/'><i class="fa fa-circle-o"></i> Level One
                 <span class="pull-right-container">
                         <i class="fa fa-angle-left pull-right"></i>
                       </span>
-                    </a>
+                    </Link>
                     <ul class="treeview-menu">
-                      <li><a href="#"><i class="fa fa-circle-o"></i> Level Two</a></li>
+                      <li><Link to='/'><i class="fa fa-circle-o"></i> Level Two</Link></li>
                       <li>
-                        <a href="#"><i class="fa fa-circle-o"></i> Level Two
+                        <Link to='/'><i class="fa fa-circle-o"></i> Level Two
                     <span class="pull-right-container">
                             <i class="fa fa-angle-left pull-right"></i>
                           </span>
-                        </a>
+                        </Link>
                         <ul class="treeview-menu">
-                          <li><a href="#"><i class="fa fa-circle-o"></i> Level Three</a></li>
-                          <li><a href="#"><i class="fa fa-circle-o"></i> Level Three</a></li>
+                          <li><Link to='/'><i class="fa fa-circle-o"></i> Level Three</Link></li>
+                          <li><Link to='/'><i class="fa fa-circle-o"></i> Level Three</Link></li>
                         </ul>
                       </li>
                     </ul>
                   </li>
-                  <li><a href="#"><i class="fa fa-circle-o"></i> Level One</a></li>
+                  <li><Link to='/'><i class="fa fa-circle-o"></i> Level One</Link></li>
                 </ul>
               </li>
             </ul>

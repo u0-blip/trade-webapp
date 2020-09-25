@@ -1,5 +1,4 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import Header from './header/header';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -11,6 +10,34 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import store from "./redux/store";
 import Home from './pages/home';
+import AuthRoute from './util/auth/AuthRoute';
+import Login from './util/auth/Login';
+import Signup from './util/auth/Signup';
+import { ApolloProvider } from 'react-apollo';
+import ApolloClient, { gql } from 'apollo-boost';
+import Axios from 'axios';
+
+Axios.defaults.baseURL = 'http://127.0.0.1:8000';
+
+const client = new ApolloClient({
+  uri: Axios.defaults.baseURL + '/graphql/',
+  fetchOptions: {
+    credentials: "include"
+  },
+  request: operation => {
+    const token = localStorage.getItem('authToken') || ""
+    operation.setContext({
+      headers: {
+        Authorization: `JWT ${token}`
+      }
+    })
+  },
+  clientState: {
+    defaults: {
+      isLoggedIn: !!localStorage.getItem('authToken')
+    }
+  }
+});
 
 const theme = createMuiTheme({
   spread: {
@@ -49,18 +76,74 @@ function App() {
   return (
     <MuiThemeProvider theme={theme}>
       <Provider store={store}>
-        <Router>
-          <div className="App">
-            <Header />
 
-            <Switch>
-              <Route exact path='/' component={Home} />
-            </Switch>
-          </div>
-        </Router>
+        <ApolloProvider client={client}>
+          <Router>
+            <div className="App">
+              <Header />
+
+              <Switch>
+                <Route exact path='/' component={Home} />
+                <Route exact path='/login' component={Login} />
+                <Route exact path='/signup' component={Signup} />
+              </Switch>
+            </div>
+          </Router>
+        </ApolloProvider>
       </Provider>
     </MuiThemeProvider>
   );
 }
+
+export const GET_TRACKS_QUERY = gql`
+  query getTracksQuery {
+    music {
+      id
+      title
+      description
+      hashtag
+      url
+      owner {
+        id
+        username
+      }
+    }
+  }
+
+`;
+
+
+const IS_LOGGED_IN_QUERY = gql`
+    query {
+        isLoggedIn @client
+    }
+`;
+
+
+export const GET_SELF_QUERY = gql`
+  {
+    userself {
+      id
+      username
+      email
+    }
+  }
+`;
+
+export const GET_USER_QUERY = gql`
+  query ($id:Int!){
+    user (id: $id){
+      id
+      username
+      email
+      dateJoined
+      musicSet{
+        id
+        title
+        url
+      }
+    }
+  }
+`;
 
 export default App;
