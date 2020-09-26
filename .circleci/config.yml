@@ -8,10 +8,10 @@ jobs:
     executor: python/default
     steps:
       - checkout
+      - run: cd backend
       - python/load-cache
       - python/install-deps
       - python/save-cache
-      - run: cd backend
       - run:
           command: ./manage.py test
           name: Test
