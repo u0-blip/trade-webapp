@@ -8,8 +8,8 @@ jobs:
     executor: python/default
     working_directory: ~/project/backend/
     steps:
-      - checkout
-        path: ~/project
+      - checkout:
+          path: ~/project
       - python/load-cache
       - python/install-deps
       - python/save-cache
