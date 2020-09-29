@@ -17,7 +17,25 @@ jobs:
           command: ./manage.py test
           name: Test
 
+  deploy:
+    docker:
+      - image: google/cloud-sdk
+    steps:
+      - run: |
+          echo $GCLOUD_SERVICE_KEY | gcloud auth activate-service-account --key-file=-
+          gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
+          gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
+
 workflows:
   main:
     jobs:
       - build-and-test
+      - deploy
+          requires:
+            - build-and-test  # Only deploy once the build job has completed
+          filters:
+            branches:
+              only: master # Only deploy on the master branch
+
+
+  
