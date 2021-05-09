@@ -18,7 +18,7 @@ import ApolloClient, { gql } from 'apollo-boost';
 import Axios from 'axios';
 import Profile from './pages/profile';
 
-Axios.defaults.baseURL = 'http://127.0.0.1:8000';
+Axios.defaults.baseURL = 'https://trade.tbitzz.com';
 
 const client = new ApolloClient({
   uri: Axios.defaults.baseURL + '/graphql/',
