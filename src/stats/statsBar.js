@@ -33,7 +33,7 @@ export class StatsBar extends Component {
             <div class="col-lg-2 col-xs-4">
                 <div class="small-box bg-red-gradient">
                     <div class="inner">
-                        <h3>2.62</h3>
+                        <h3>{(Math.round(Math.random() * 1000) / 100).toFixed(2)}</h3>
 
                         {stats}
                     </div>

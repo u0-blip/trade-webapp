@@ -4,7 +4,7 @@ import Header from './header/header';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle';
 import './appDefinedAction';
-import { createMuiTheme, MuiThemeProvider } from '@material-ui/core';
+import { Container, createMuiTheme, MuiThemeProvider } from '@material-ui/core';
 import { Provider } from "react-redux";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
@@ -84,10 +84,12 @@ function App() {
               <Header />
 
               <Switch>
-                <Route exact path='/' component={Home} />
-                <Route exact path='/login' component={Login} />
-                <Route exact path='/signup' component={Signup} />
-                <Route path='/profile/:id' component={Profile} />
+                <Container>
+                  <Route exact path='/' component={Home} />
+                  <Route exact path='/login' component={Login} />
+                  <Route exact path='/signup' component={Signup} />
+                  <Route path='/profile/:id' component={Profile} />
+                </Container>
 
               </Switch>
             </div>
